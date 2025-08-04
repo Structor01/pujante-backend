@@ -96,15 +96,18 @@ export class TrilhasController {
     @Body() createAulaDto: CreateAulaDto,
     @UploadedFile() video?: Express.Multer.File,
   ) {
-    let videoPath: string;
-    let thumbnailUrl: string;
+    let videoPath: string | undefined;
+    let thumbnailUrl: string | undefined;
     let duracao: number;
 
     if (video) {
       try {
         const processedVideo = await this.videoService.processVideo(video.path, video.filename);
         videoPath = processedVideo.optimizedPath;
-        thumbnailUrl = this.videoService.getThumbnailUrl(processedVideo.thumbnailPath.split('/').pop());
+        const thumbnailFileName = processedVideo.thumbnailPath.split('/').pop();
+        if (thumbnailFileName) {
+          thumbnailUrl = this.videoService.getThumbnailUrl(thumbnailFileName);
+        }
         duracao = processedVideo.duration;
         
         // Atualizar DTO com duração
@@ -134,14 +137,17 @@ export class TrilhasController {
     @Body() updateData: Partial<CreateAulaDto>,
     @UploadedFile() video?: Express.Multer.File,
   ) {
-    let videoPath: string;
-    let thumbnailUrl: string;
+    let videoPath: string | undefined;
+    let thumbnailUrl: string | undefined;
 
     if (video) {
       try {
         const processedVideo = await this.videoService.processVideo(video.path, video.filename);
         videoPath = processedVideo.optimizedPath;
-        thumbnailUrl = this.videoService.getThumbnailUrl(processedVideo.thumbnailPath.split('/').pop());
+        const thumbnailFileName = processedVideo.thumbnailPath.split('/').pop();
+        if (thumbnailFileName) {
+          thumbnailUrl = this.videoService.getThumbnailUrl(thumbnailFileName);
+        }
         updateData.duracao = processedVideo.duration;
       } catch (error) {
         throw new BadRequestException('Erro ao processar vídeo: ' + error.message);
