@@ -3,6 +3,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  // Debug das variáveis de ambiente
+  console.log('🔍 Variáveis de ambiente carregadas:');
+  console.log('DATABASE_HOST:', process.env.DATABASE_HOST);
+  console.log('DATABASE_PORT:', process.env.DATABASE_PORT);
+  console.log('DATABASE_NAME:', process.env.DATABASE_NAME);
+  console.log('JWT_SECRET:', process.env.JWT_SECRET ? '***definido***' : 'undefined');
+  
   const app = await NestFactory.create(AppModule);
   
   // Configurar CORS
@@ -26,3 +33,4 @@ async function bootstrap() {
   console.log('🚀 Servidor Pujante rodando na porta', process.env.PORT || 3000);
 }
 bootstrap();
+
